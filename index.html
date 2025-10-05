@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mini Gacha + Quest – SOFA 2025</title>
+  <meta name="theme-color" content="#0b0f14">
+  <style>
+    :root{
+      --bg:#0b0f14; --card:#121822; --muted:#8aa0b6; --text:#e6eef7; --accent:#51f0c5; --accent2:#7aa8ff; --danger:#ff6b6b; --ok:#2dd4bf; --warn:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(1200px 800px at 70% -10%, #172133 0%, #0b0f14 55%);color:var(--text);font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    header{display:flex;align-items:center;gap:12px}
+    header .logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;color:#0b0f14;cursor:pointer;user-select:none}
+    header h1{font-size:22px;margin:0}
+    header small{color:var(--muted)}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.12));border:1px solid rgba(255,255,255,.08);backdrop-filter: blur(6px); border-radius:16px; padding:18px; box-shadow:0 8px 30px rgba(0,0,0,.35)}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:980px){.grid{grid-template-columns:1.1fr .9fr}}
+    .cta{display:grid;place-items:center;padding:20px}
+    .big{font-size:28px;font-weight:800;padding:16px 24px;border-radius:16px;border:none;color:#0b0f14;background:linear-gradient(135deg,var(--accent),var(--accent2));cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+    .big:disabled{opacity:.5;cursor:not-allowed}
+    .result{font-size:20px;text-align:center;margin-top:8px}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:12px}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;font-size:14px}
+    th{color:var(--muted);font-weight:600}
+    .tier-R{color:#cbd5e1}
+    .tier-SR{color:#93c5fd}
+    .tier-SSR{color:#fcd34d}
+    .small{font-size:12px}
+    .right{ text-align:right}
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size:12px; padding:2px 6px; border:1px solid rgba(255,255,255,.18); border-radius:6px; background:rgba(255,255,255,.05)}
+    .hidden{display:none}
+    .foot{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap}
+    .btn{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.2);padding:8px 10px;border-radius:10px;cursor:pointer}
+    .btn.ok{border-color:var(--ok)}
+    .btn.danger{border-color:var(--danger);color:#ffb4b4}
+    .btn.small{font-size:12px;padding:6px 8px}
+    .admin{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+    .admin .panel{width:min(1080px,95vw);max-height:90vh;overflow:auto}
+    .admin h2{margin:0 0 8px 0}
+    input,select{background:#0d131c;color:#e6eef7;border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px}
+    .flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .w-100{width:100%}
+    .code{font-size:28px;font-weight:900;letter-spacing:2px}
+    .success{color:var(--ok)}
+    .danger{color:var(--danger)}
+    .warn{color:var(--warn)}
+    .quest-box{border:1px dashed rgba(255,255,255,.18);border-radius:12px;padding:12px}
+    .choices{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    .callout{border-left:4px solid var(--accent2);padding:8px 12px;background:rgba(122,168,255,.08);border-radius:8px}
+    .banner{position:sticky;top:0;z-index:60;margin:-20px -20px 12px -20px;padding:10px 16px;background:rgba(245,158,11,.15);border-bottom:1px solid rgba(245,158,11,.4)}
+    .banner.error{background:rgba(255,107,107,.15);border-color:rgba(255,255,255,.45)}
+    .banner.warn{background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.4)}
+    #testLog{display:none;white-space:pre-wrap;margin-top:12px;font-size:12px;color:#e0e7ff;background:rgba(122,168,255,.08);border:1px solid rgba(122,168,255,.25);padding:10px;border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="banner" class="banner hidden"></div>
+    <header>
+      <div class="logo" id="logo" title="Mantén presionado para admin">G</div>
+      <div>
+        <h1>Mini Gacha <span class="pill">+ Quest</span> <span class="pill">SOFA 2025</span></h1>
+        <small class="muted">Modo offline • 1 tirada por cada 20.000 COP (editable) • Modo aventura opcional</small>
+      </div>
+    </header>
+
+    <div class="grid" style="margin-top:16px">
+      <!-- LEFT: GACHA + QUEST -->
+      <section class="card">
+        <div class="row">
+          <div>
+            <div class="muted small">Tiradas disponibles (introduce el staff):</div>
+            <div class="flex">
+              <input id="pulls" type="number" min="1" max="10" value="1" style="width:100px" />
+              <button class="btn small" id="btnAddPulls" title="Suma tiradas al contador interno (PIN)">Sumar al contador</button>
+              <span class="muted small">Total del día: <span id="pullCount">0</span></span>
+            </div>
+          </div>
+          <div class="right small">
+            <div class="muted">Stock activo</div>
+            <div id="stockSummary" class="small">—</div>
+            <div class="muted" id="boostInfo">Boost: 0</div>
+          </div>
+        </div>
+
+        <!-- QUEST BOX -->
+        <div class="quest-box" id="questBox">
+          <div class="row">
+            <strong>Aventura rápida</strong>
+            <div class="small muted">(opcional, da boost de suerte si ganas)</div>
+          </div>
+          <div id="questText" class="small" style="margin-top:6px">Pulsa “Nueva aventura” para un encuentro.</div>
+          <div class="choices" id="questChoices">
+            <button class="btn small" id="btnNewQuest">Nueva aventura</button>
+          </div>
+          <div class="small muted" id="questHint">La victoria añade <strong>+1 boost</strong> (mejores odds para SR/SSR) hasta un máximo configurable.</div>
+        </div>
+
+        <div class="cta">
+          <button class="big" id="pull">INVOCAR</button>
+          <div class="result" id="result">Listo para invocar 🔮</div>
+          <div class="small muted" id="note">Consejo: el staff controla el dispositivo. No requiere internet.</div>
+        </div>
+      </section>
+
+      <!-- RIGHT: PRIZES & WINNERS -->
+      <aside class="card">
+        <div class="row">
+          <strong>Premios</strong>
+          <div class="flex">
+            <button class="btn small" id="btnViewWinners">Ganadores</button>
+          </div>
+        </div>
+        <table id="prizeTable"><thead>
+          <tr><th>Premio</th><th>Tier</th><th>Odds</th><th>Restante</th></tr>
+        </thead><tbody></tbody></table>
+        <div class="callout small" style="margin-top:10px">
+          <strong>Modo Quest activo:</strong> Al ganar una aventura, tu siguiente invocación aplica multiplicadores a SR/SSR.
+        </div>
+        <pre id="testLog"></pre>
+      </aside>
+    </div>
+
+    <div class="foot" style="margin-top:16px">
+      <div class="small muted">Tip: mantén presionado el logo <span class="kbd">G</span> 2s para Admin o usa <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">A</span>. Pruebas: <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">T</span> o añade <span class="kbd">#test</span> a la URL.</div>
+      <div class="flex">
+        <button class="btn small" id="btnExportWinners">Exportar ganadores (.csv)</button>
+        <button class="btn small" id="btnExportState">Exportar estado (.json)</button>
+        <button class="btn small danger" id="btnHardReset">Reinicio duro</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Modal -->
+  <div class="admin" id="admin">
+    <div class="panel card">
+      <div class="row">
+        <h2>Panel admin</h2>
+        <button class="btn" id="closeAdmin">Cerrar</button>
+      </div>
+      <div class="muted small">PIN requerido para acciones críticas. PIN por defecto: <span class="kbd">7777</span></div>
+
+      <h3>Config general</h3>
+      <div class="flex">
+        <label>Tiradas por 20.000 COP <input id="cfgTiradaRatio" type="number" min="1" value="1"/></label>
+        <label>PIN Admin <input id="cfgPin" type="password" value="7777"/></label>
+      </div>
+
+      <h3 style="margin-top:8px">Modo Quest</h3>
+      <div class="flex">
+        <label>Activar Quest <input id="cfgQuestEnabled" type="checkbox" checked/></label>
+        <label>Máx. Boost <input id="cfgQuestMax" type="number" min="0" value="3" style="width:90px"/></label>
+        <label>Mult SR <input id="cfgQuestMultSR" type="number" step="0.1" min="1" value="1.2" style="width:90px"/></label>
+        <label>Mult SSR <input id="cfgQuestMultSSR" type="number" step="0.1" min="1" value="1.5" style="width:90px"/></label>
+        <button class="btn ok" id="saveCfg">Guardar</button>
+      </div>
+
+      <h3 style="margin-top:12px">Premios</h3>
+      <div class="small muted">Los <em>odds</em> son ponderaciones. El sistema ajusta automáticamente según inventario restante. Modo Quest multiplica SR/SSR si hay boost.</div>
+      <table id="adminTable"><thead>
+        <tr><th>Nombre</th><th>Tier</th><th>Odds</th><th>Inventario</th><th>Activo</th><th></th></tr>
+      </thead><tbody></tbody></table>
+      <div class="flex" style="margin-top:10px">
+        <input id="newName" placeholder="Nombre del premio" class="w-100"/>
+        <select id="newTier">
+          <option>R</option>
+          <option>SR</option>
+          <option>SSR</option>
+        </select>
+        <input id="newOdds" type="number" min="1" value="10" style="width:90px"/>
+        <input id="newInv" type="number" min="0" value="10" style="width:110px"/>
+        <button class="btn ok" id="addPrize">Agregar</button>
+      </div>
+
+      <h3 style="margin-top:16px">Ganadores</h3>
+      <div id="winnersBox" class="small" style="max-height:220px;overflow:auto;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px"></div>
+    </div>
+  </div>
+
+  <script>
+    // ===== SAFE STORAGE (localStorage fallback) =====
+    let storageOK = true; let memStateStr = null;
+    try{ const t='__test'; localStorage.setItem(t,'1'); localStorage.removeItem(t); }
+    catch(e){ storageOK = false; }
+    function writeLS(key, json){ if(storageOK){ try{ localStorage.setItem(key, json); }catch(e){ storageOK=false; memStateStr=json; } } else { memStateStr=json; } }
+    function readLS(key){ if(storageOK){ try{ return localStorage.getItem(key); }catch(e){ storageOK=false; return memStateStr; } } else { return memStateStr; } }
+    function removeLS(key){ if(storageOK){ try{ localStorage.removeItem(key); }catch(e){ storageOK=false; memStateStr=null; } } else { memStateStr=null; } }
+
+    function showBanner(msg, kind='warn'){ const b=document.getElementById('banner'); b.textContent=msg; b.className='banner '+kind; b.classList.remove('hidden'); }
+    window.addEventListener('error', (e)=>{ showBanner('Error inesperado: '+(e.message||'desconocido')+' — intenta recargar.', 'error'); });
+
+    // ===== STATE =====
+    const LS_KEY = 'gacha_state_v2_quest';
+    let state = null;
+
+    function defaultState(){
+      return {
+        cfg:{pin:'7777', ratioPer20k:1, quest:{enabled:true, maxBoost:3, multSR:1.2, multSSR:1.5}},
+        prizes:[
+          {id:id(), name:'Sticker común', tier:'R', odds:60, inventory:200, won:0, redeemed:0, active:true},
+          {id:id(), name:'Mini print', tier:'R', odds:25, inventory:80, won:0, redeemed:0, active:true},
+          {id:id(), name:'Pin', tier:'SR', odds:10, inventory:30, won:0, redeemed:0, active:true},
+          {id:id(), name:'Póster A4', tier:'SR', odds:4, inventory:15, won:0, redeemed:0, active:true},
+          {id:id(), name:'Camiseta', tier:'SSR', odds:1, inventory:3, won:0, redeemed:0, active:true},
+        ],
+        pullsToday:0,
+        winners:[], // {code, prizeId, name, tier, ts, redeemed:false, boostUsed:number}
+        quest:{ boost:0, encounter:null }
+      };
+    }
+
+    function id(){ return Math.random().toString(36).slice(2,8)+Math.random().toString(36).slice(2,4); }
+
+    function save(){ writeLS(LS_KEY, JSON.stringify(state)); render(); }
+
+    function load(){
+      const raw = readLS(LS_KEY);
+      if(raw){ try{ state = JSON.parse(raw); }catch{ state = defaultState(); } migrate(); }
+      else { state = defaultState(); }
+      render();
+      if(!storageOK){ showBanner('⚠️ Modo sin almacenamiento: los datos se perderán al recargar.', 'warn'); }
+      if(location.hash==="#test"){ runSelfTests(); }
+    }
+
+    function migrate(){ if(!state.cfg) state.cfg = {pin:'7777', ratioPer20k:1}; if(!state.cfg.quest) state.cfg.quest = {enabled:true, maxBoost:3, multSR:1.2, multSSR:1.5}; if(!state.quest) state.quest = {boost:0, encounter:null}; }
+
+    // ===== RENDER =====
+    function render(){
+      renderPrizes(); renderQuestUI();
+      document.getElementById('pullCount').textContent = state.pullsToday;
+      const left = state.prizes.reduce((a,p)=>a+(p.inventory-p.won),0);
+      document.getElementById('stockSummary').textContent = left+ ' ítems';
+      document.getElementById('boostInfo').innerHTML = 'Boost: ' + (state.quest.boost||0);
+    }
+
+    function renderPrizes(){
+      const tbody = document.querySelector('#prizeTable tbody'); if(!tbody){
+        const table = document.getElementById('prizeTable');
+        table.innerHTML = '<thead><tr><th>Premio</th><th>Tier</th><th>Odds</th><th>Restante</th></tr></thead><tbody></tbody>';
+      }
+      const tbd = document.querySelector('#prizeTable tbody');
+      tbd.innerHTML = '';
+      state.prizes.forEach(p=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${p.name}</td><td class="tier-${p.tier}">${p.tier}</td><td>${p.odds}</td><td>${Math.max(0,p.inventory - p.won)}</td>`;
+        tbd.appendChild(tr);
+      });
+    }
+
+    // ===== QUEST =====
+    const ENCOUNTERS = [
+      { id:'slime', name:'Slime chispeante', tier:'R', diff:'fácil', base:0.65, intro:['Te internas entre puestos y aparece un **Slime chispeante**','Un charco vibra y el **Slime chispeante** toma forma'] },
+      { id:'drone', name:'Dron asaltante', tier:'SR', diff:'media', base:0.5, intro:['Un **Dron asaltante** te bloquea el paso','Se oye un zumbido: es un **Dron asaltante**'] },
+      { id:'shadow', name:'Sombra del Abismo', tier:'SSR', diff:'alta', base:0.35, intro:['El aire se enfría… una **Sombra del Abismo** emerge','Tu reflejo se separa: es la **Sombra del Abismo**'] }
+    ];
+    function newEncounter(){ const e = ENCOUNTERS[Math.floor(Math.random()*ENCOUNTERS.length)]; state.quest.encounter = { id:e.id, name:e.name, diff:e.diff, base:e.base, line:e.intro[Math.floor(Math.random()*e.intro.length)] }; save(); }
+    function renderQuestUI(){
+      const box = document.getElementById('questBox'); const text = document.getElementById('questText'); const choices = document.getElementById('questChoices'); const q = state.quest.encounter;
+      if(!state.cfg.quest.enabled){ box.classList.add('hidden'); return; } else box.classList.remove('hidden');
+      choices.innerHTML = '';
+      if(!q){ text.innerHTML = 'Pulsa “Nueva aventura” para un encuentro.'; const btn = document.createElement('button'); btn.className='btn small'; btn.id='btnNewQuest'; btn.textContent='Nueva aventura'; btn.onclick = ()=>{ newEncounter(); }; choices.appendChild(btn); return; }
+      text.innerHTML = `${q.line}. <br/>Te plantas frente a <strong>${q.name}</strong> (dificultad ${q.diff}). ¿Qué harás?`;
+      const b1 = mkChoice('Ataque rápido', ()=>resolveQuest('attack'));
+      const b2 = mkChoice('Defensa calculada', ()=>resolveQuest('defend'));
+      const b3 = mkChoice('Habilidad: Golpe crítico', ()=>resolveQuest('skill'));
+      choices.append(b1,b2,b3);
+    }
+    function mkChoice(label, fn){ const b=document.createElement('button'); b.className='btn small'; b.textContent=label; b.onclick=fn; return b; }
+    function resolveQuest(choice){
+      const q = state.quest.encounter; if(!q) return;
+      let p = q.base;
+      if(choice==='attack'){ p += (q.base>=0.6?0.05:(q.base<=0.4?-0.05:0)); }
+      if(choice==='defend'){ p += (q.base<=0.4?0.07:0.02); }
+      if(choice==='skill'){ p += 0.1; }
+      p = Math.max(0.05, Math.min(0.9, p));
+      const win = Math.random() < p;
+      const text = document.getElementById('questText'); const choices = document.getElementById('questChoices');
+      if(win){ state.quest.boost = Math.min(state.cfg.quest.maxBoost, (state.quest.boost||0)+1); text.innerHTML = `¡Victoria! Derrotaste a <strong>${q.name}</strong>. <span class="success">Aura de suerte +1</span> (Boost actual: ${state.quest.boost}). Usa tu invocación para aprovecharlo.`; }
+      else { text.innerHTML = `Has fallado contra <strong>${q.name}</strong>. <span class="warn">Sin boost</span>, pero aún puedes invocar.`; }
+      state.quest.encounter = null; choices.innerHTML = ''; const btn = document.createElement('button'); btn.className='btn small'; btn.textContent='Nueva aventura'; btn.onclick = ()=>{ newEncounter(); }; choices.appendChild(btn); save();
+    }
+
+    // ===== GACHA =====
+    function activePool(){
+      const pool = state.prizes.filter(p=>p.active && (p.inventory - p.won) > 0);
+      const boost = (state.cfg.quest.enabled? (state.quest.boost||0) : 0);
+      const mSR = Math.pow(state.cfg.quest.multSR||1, boost||0);
+      const mSSR = Math.pow(state.cfg.quest.multSSR||1, boost||0);
+      let totalWeight = 0; const weighted = pool.map(p=>{ const mult = p.tier==='SSR' ? mSSR : (p.tier==='SR' ? mSR : 1); const w = p.odds * mult; totalWeight += w; return {ref:p, weight:w}; });
+      return {weighted,totalWeight};
+    }
+    function pickPrize(){ const {weighted,totalWeight} = activePool(); if(weighted.length===0) return null; let r = Math.random()*totalWeight; for(const e of weighted){ if(r < e.weight) return e.ref; r -= e.weight; } return weighted[weighted.length-1].ref; }
+    function pullOnce(){ const prize = pickPrize(); if(!prize){ setResult('Sin stock. Revisa Admin.', true); return null; } prize.won++; const code = genCode(prize.tier); const boostUsed = state.quest.boost||0; const rec = {code, prizeId:prize.id, name:prize.name, tier:prize.tier, ts:Date.now(), redeemed:false, boostUsed}; state.winners.unshift(rec); state.pullsToday++; if(state.cfg.quest.enabled && state.quest.boost>0){ state.quest.boost = Math.max(0, state.quest.boost-1); } save(); return rec; }
+    function genCode(tier){ const map = {SSR:'⭐', SR:'◇', R:'○'}; const token = Math.random().toString(36).slice(2,6).toUpperCase(); const time = new Date(); const d = String(time.getDate()).padStart(2,'0'); const m = String(time.getMonth()+1).padStart(2,'0'); return `${map[tier]||'○'}-${m}${d}-${token}`; }
+    function setResult(msg, isError=false){ const el = document.getElementById('result'); el.innerHTML = msg; el.className = 'result ' + (isError?'danger':'success'); document.body.animate([{filter:'brightness(1)'},{filter:'brightness(1.4)'},{filter:'brightness(1)'}], {duration:420}); }
+
+    // ===== ADMIN UI =====
+    function renderAdmin(){
+      document.getElementById('cfgTiradaRatio').value = state.cfg.ratioPer20k;
+      document.getElementById('cfgPin').value = state.cfg.pin;
+      document.getElementById('cfgQuestEnabled').checked = !!state.cfg.quest.enabled;
+      document.getElementById('cfgQuestMax').value = state.cfg.quest.maxBoost;
+      document.getElementById('cfgQuestMultSR').value = state.cfg.quest.multSR;
+      document.getElementById('cfgQuestMultSSR').value = state.cfg.quest.multSSR;
+      const tbody = document.querySelector('#adminTable tbody'); if(tbody){ tbody.innerHTML = ''; }
+      const table = document.getElementById('adminTable'); table.querySelector('tbody')?.remove(); const tb = document.createElement('tbody'); table.appendChild(tb);
+      state.prizes.forEach((p,idx)=>{ const tr = document.createElement('tr'); tr.innerHTML = `
+          <td><input data-k="name" data-i="${idx}" value="${p.name}" class="w-100"/></td>
+          <td>
+            <select data-k="tier" data-i="${idx}">
+              <option ${p.tier==='R'?'selected':''}>R</option>
+              <option ${p.tier==='SR'?'selected':''}>SR</option>
+              <option ${p.tier==='SSR'?'selected':''}>SSR</option>
+            </select>
+          </td>
+          <td><input type="number" min="0" data-k="odds" data-i="${idx}" value="${p.odds}" style="width:90px"/></td>
+          <td><input type="number" min="0" data-k="inventory" data-i="${idx}" value="${p.inventory}" style="width:110px"/></td>
+          <td><input type="checkbox" data-k="active" data-i="${idx}" ${p.active?'checked':''}/></td>
+          <td><button class="btn small danger" data-del="${idx}">Eliminar</button></td>`; tb.appendChild(tr); });
+      const box = document.getElementById('winnersBox');
+      box.innerHTML = state.winners.slice(0,120).map(w=>{ const date = new Date(w.ts).toLocaleString(); const tierClass = 'tier-'+w.tier; return `<div class="row"><div><strong>${w.name}</strong> <span class="${tierClass}">[${w.tier}]</span><br><span class="small muted">${date} • boost usado: ${w.boostUsed||0}</span></div><div class="code">${w.code}</div></div>`; }).join('');
+    }
+    function requirePIN(){ const pin = prompt('PIN Admin'); return pin && pin === state.cfg.pin; }
+    function buildCSV(rows){ return rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\n'); }
+    function exportCSV(){ const rows = [["code","prize","tier","timestamp","redeemed","boostUsed"]]; state.winners.forEach(w=>{ rows.push([w.code, w.name, w.tier, new Date(w.ts).toISOString(), w.redeemed?'yes':'no', w.boostUsed||0]); }); const csv = buildCSV(rows); download('ganadores.csv', csv, 'text/csv'); }
+    function exportState(){ download('gacha_state.json', JSON.stringify(state,null,2), 'application/json'); }
+    function download(filename, content, type){ const blob = new Blob([content], {type}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
+
+    // EVENTS
+    document.getElementById('pull').addEventListener('click', ()=>{ const rec = pullOnce(); if(rec){ setResult(`¡Ganaste <strong>${rec.name}</strong> <span class="tier-${rec.tier}">[${rec.tier}]</span><br><span class="muted">Código:</span> <span class="code">${rec.code}</span>`); } });
+    document.getElementById('btnAddPulls').addEventListener('click', ()=>{ if(!requirePIN()) return alert('PIN incorrecto'); const n = parseInt(document.getElementById('pulls').value||'1',10); if(n>0){ state.pullsToday += n; save(); } });
+    (function(){ const logo=document.getElementById('logo'); let t=null; logo.addEventListener('pointerdown', ()=>{ t=setTimeout(()=>{ if(requirePIN()) openAdmin(); }, 800)}); ['pointerup','pointerleave'].forEach(ev=>logo.addEventListener(ev,()=>{ if(t){clearTimeout(t); t=null;} })); })();
+    document.addEventListener('keydown', (e)=>{ try{ if(e.ctrlKey && e.shiftKey && (e.key==='A' || e.key==='a')){ if(requirePIN()) openAdmin(); } if(e.ctrlKey && e.shiftKey && (e.key==='T' || e.key==='t')){ runSelfTests(true); } }catch{} });
+    function openAdmin(){ document.getElementById('admin').style.display='flex'; renderAdmin(); }
+    document.getElementById('closeAdmin').addEventListener('click', ()=>{ document.getElementById('admin').style.display='none'; render(); });
+    document.getElementById('admin').addEventListener('change', (e)=>{ const k = e.target.getAttribute('data-k'); if(!k) return; const i = +e.target.getAttribute('data-i'); if(!requirePIN()) return e.preventDefault(); let v = e.target.type==='checkbox' ? e.target.checked : e.target.value; if(['inventory','odds'].includes(k)) v = parseInt(v||'0',10); state.prizes[i][k] = v; save(); renderAdmin(); });
+    document.getElementById('addPrize').addEventListener('click', ()=>{ if(!requirePIN()) return; const name = document.getElementById('newName').value.trim(); const tier = document.getElementById('newTier').value; const odds = parseInt(document.getElementById('newOdds').value||'0',10); const inv = parseInt(document.getElementById('newInv').value||'0',10); if(!name || odds<=0 || inv<0) return alert('Completa los campos'); state.prizes.push({id:id(), name, tier, odds, inventory:inv, won:0, redeemed:0, active:true}); document.getElementById('newName').value=''; save(); renderAdmin(); });
+    document.getElementById('adminTable').addEventListener('click', (e)=>{ const del = e.target.getAttribute('data-del'); if(del!=null){ if(!requirePIN()) return; state.prizes.splice(+del,1); save(); renderAdmin(); } });
+    document.getElementById('saveCfg').addEventListener('click', ()=>{ if(!requirePIN()) return; state.cfg.ratioPer20k = parseInt(document.getElementById('cfgTiradaRatio').value||'1',10); state.cfg.pin = document.getElementById('cfgPin').value||'7777'; state.cfg.quest.enabled = document.getElementById('cfgQuestEnabled').checked; state.cfg.quest.maxBoost = parseInt(document.getElementById('cfgQuestMax').value||'3',10); state.cfg.quest.multSR = parseFloat(document.getElementById('cfgQuestMultSR').value||'1.2'); state.cfg.quest.multSSR = parseFloat(document.getElementById('cfgQuestMultSSR').value||'1.5'); save(); alert('Guardado'); });
+
+    // TESTS
+    function logTest(msg){ const el=document.getElementById('testLog'); el.style.display='block'; el.textContent += msg + "\n"; }
+    function assert(cond, msg){ if(!cond){ logTest('❌ ' + msg); throw new Error(msg); } else { logTest('✅ ' + msg); } }
+    function runSelfTests(show=true){ try{
+      if(show) document.getElementById('testLog').textContent='';
+      const csv = buildCSV([["a","b"],["c","d"]]); assert(csv.includes('\n'), 'CSV usa salto de línea (\\n)'); assert(csv.split('\n').length===2, 'CSV tiene 2 líneas');
+      const code = genCode('SR'); assert(/^◇-\d{4}-[A-Z0-9]{4}$/.test(code), 'genCode respeta formato ◇-MMDD-TOKEN');
+      const backup = JSON.parse(JSON.stringify(state));
+      state.prizes = [{id:'x', name:'Camisa', tier:'SSR', odds:1, inventory:1, won:0, redeemed:0, active:true}]; state.cfg.quest.multSSR = 2; state.cfg.quest.multSR = 1; state.quest.boost = 2;
+      const ap = activePool(); assert(ap.weighted.length===1 && Math.abs(ap.weighted[0].weight-4) < 1e-9, 'Boost SSR OK');
+      const mrand = Math.random; Math.random = ()=>0; const picked = pickPrize(); Math.random = mrand; assert(picked && picked.tier==='SSR', 'pickPrize con solo SSR');
+      state = backup; save();
+      const backup2 = JSON.parse(JSON.stringify(state)); state.prizes = [{id:'y', name:'Sticker', tier:'R', odds:1, inventory:5, won:0, redeemed:0, active:true}]; state.quest.boost = 2; const before = state.quest.boost; pullOnce(); const after = state.quest.boost; assert(before-after===1, 'pullOnce consume 1 boost'); state = backup2; save();
+      logTest('— Fin de pruebas —');
+    }catch(err){ showBanner('Pruebas: '+err.message, 'error'); throw err; } }
+
+    // Boot
+    load();
+  </script>
+</body>
+</html>
