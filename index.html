@@ -4,47 +4,91 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mini Gacha + Quest – SOFA 2025</title>
-  <meta name="theme-color" content="#0b0f14">
+
   <style>
     :root{
-      --bg:#0b0f14; --card:#121822; --muted:#8aa0b6; --text:#e6eef7; --accent:#51f0c5; --accent2:#7aa8ff; --danger:#ff6b6b; --ok:#2dd4bf; --warn:#f59e0b;
+      /* Paleta solicitada */
+      --bg:#262626;             /* fondo */
+      --text:#f2f2f2;           /* texto principal */
+      --muted:#bdbdbd;          /* texto secundario */
+      --accent:#BAFF29;         /* botones / enlaces */
+      --accent2:#F3FF00;        /* 2do acento (logo) */
+      --danger:#F23064;         /* reinicio duro */
+      --card:#303030;           /* tarjetas */
+      --ok:#2dd4bf;
+      --warn:#f59e0b;
     }
-    *{box-sizing:border-box}
-    body{margin:0;background:radial-gradient(1200px 800px at 70% -10%, #172133 0%, #0b0f14 55%);color:var(--text);font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;}
+
+    *{ box-sizing:border-box }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+    }
+
     .wrap{max-width:1100px;margin:0 auto;padding:20px}
     header{display:flex;align-items:center;gap:12px}
-    header .logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;color:#0b0f14;cursor:pointer;user-select:none}
     header h1{font-size:22px;margin:0}
     header small{color:var(--muted)}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.12));border:1px solid rgba(255,255,255,.08);backdrop-filter: blur(6px); border-radius:16px; padding:18px; box-shadow:0 8px 30px rgba(0,0,0,.35)}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);font-size:12px}
+
+    /* Logo */
+    header .logo{
+      width:44px;height:44px;border-radius:12px;
+      background:#1c1c1c;border:2px solid rgba(255,255,255,.18);
+      display:grid;place-items:center;cursor:pointer;user-select:none
+    }
+    header .logo svg{width:36px;height:36px;display:block}
+
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.12));
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:16px; padding:18px;
+      box-shadow:0 8px 30px rgba(0,0,0,.35)
+    }
     .grid{display:grid;grid-template-columns:1fr;gap:16px}
     @media(min-width:980px){.grid{grid-template-columns:1.1fr .9fr}}
     .cta{display:grid;place-items:center;padding:20px}
-    .big{font-size:28px;font-weight:800;padding:16px 24px;border-radius:16px;border:none;color:#0b0f14;background:linear-gradient(135deg,var(--accent),var(--accent2));cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-    .big:disabled{opacity:.5;cursor:not-allowed}
+
+    /* Botones / enlaces = #BAFF29 */
+    a, a:visited{ color:var(--accent) }
+    .big, .btn{
+      background:var(--accent);
+      color:#111; border:none;
+      border-radius:12px;
+      padding:10px 14px; cursor:pointer;
+    }
+    .big{ font-size:28px; font-weight:800; padding:16px 24px }
+    .btn.small{ font-size:12px; padding:6px 10px }
+    .btn.danger{ background:var(--danger); color:#fff }   /* Reinicio duro */
+
+    .big:hover, .btn:hover{ filter:brightness(.95) }
+    .big:active, .btn:active{ transform:translateY(1px) }
+
     .result{font-size:20px;text-align:center;margin-top:8px}
     .muted{color:var(--muted)}
-    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:12px}
     .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
     table{width:100%;border-collapse:collapse}
     th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;font-size:14px}
     th{color:var(--muted);font-weight:600}
-    .tier-R{color:#cbd5e1}
+
+    .tier-R{color:#e2e8f0}
     .tier-SR{color:#93c5fd}
     .tier-SSR{color:#fcd34d}
+
     .small{font-size:12px}
-    .right{ text-align:right}
-    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size:12px; padding:2px 6px; border:1px solid rgba(255,255,255,.18); border-radius:6px; background:rgba(255,255,255,.05)}
+    .right{text-align:right}
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size:12px; padding:2px 6px; border:1px solid rgba(255,255,255,.18); border-radius:6px; background:rgba(255,255,255,.06)}
     .hidden{display:none}
     .foot{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap}
-    .btn{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.2);padding:8px 10px;border-radius:10px;cursor:pointer}
-    .btn.ok{border-color:var(--ok)}
-    .btn.danger{border-color:var(--danger);color:#ffb4b4}
-    .btn.small{font-size:12px;padding:6px 8px}
+
     .admin{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
     .admin .panel{width:min(1080px,95vw);max-height:90vh;overflow:auto}
     .admin h2{margin:0 0 8px 0}
-    input,select{background:#0d131c;color:#e6eef7;border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px}
+
+    input,select{background:#1f1f1f;color:var(--text);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px}
     .flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .w-100{width:100%}
     .code{font-size:28px;font-weight:900;letter-spacing:2px}
@@ -53,7 +97,7 @@
     .warn{color:var(--warn)}
     .quest-box{border:1px dashed rgba(255,255,255,.18);border-radius:12px;padding:12px}
     .choices{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
-    .callout{border-left:4px solid var(--accent2);padding:8px 12px;background:rgba(122,168,255,.08);border-radius:8px}
+    .callout{border-left:4px solid var(--accent);padding:8px 12px;background:rgba(186,255,41,.08);border-radius:8px}
     .banner{position:sticky;top:0;z-index:60;margin:-20px -20px 12px -20px;padding:10px 16px;background:rgba(245,158,11,.15);border-bottom:1px solid rgba(245,158,11,.4)}
     .banner.error{background:rgba(255,107,107,.15);border-color:rgba(255,255,255,.45)}
     .banner.warn{background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.4)}
@@ -63,8 +107,25 @@
 <body>
   <div class="wrap">
     <div id="banner" class="banner hidden"></div>
+
     <header>
-      <div class="logo" id="logo" title="Mantén presionado para admin">G</div>
+      <!-- LOGO con degradado BAFF29 -> F3FF00 -->
+      <div class="logo" id="logo" title="Mantén presionado para admin" aria-label="Abrir panel admin">
+        <svg viewBox="0 0 64 64" role="img" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gachaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#BAFF29"/>
+              <stop offset="100%" stop-color="#F3FF00"/>
+            </linearGradient>
+          </defs>
+          <rect x="2" y="2" width="60" height="60" rx="12" fill="#141414" stroke="rgba(255,255,255,.25)" stroke-width="2"/>
+          <path d="M10 18h44a4 4 0 0 1 4 4v6a6 6 0 0 0-6 6 6 6 0 0 0 6 6v6a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4v-6a6 6 0 0 0 6-6 6 6 0 0 0-6-6v-6a4 4 0 0 1 4-4z" fill="url(#gachaGrad)"/>
+          <path d="M40.5 26.5l2.3 4.7 5.2.8-3.8 3.7.9 5.2-4.6-2.4-4.6 2.4.9-5.2-3.8-3.7 5.2-.8 2.3-4.7z" fill="#111"/>
+          <path d="M16 48h32" stroke="#BAFF29" stroke-width="4" stroke-linecap="round"/>
+          <title>Mini Gacha</title>
+        </svg>
+      </div>
+
       <div>
         <h1>Mini Gacha <span class="pill">+ Quest</span> <span class="pill">SOFA 2025</span></h1>
         <small class="muted">Modo offline • 1 tirada por cada 20.000 COP (editable) • Modo aventura opcional</small>
@@ -129,7 +190,7 @@
     </div>
 
     <div class="foot" style="margin-top:16px">
-      <div class="small muted">Tip: mantén presionado el logo <span class="kbd">G</span> 2s para Admin o usa <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">A</span>. Pruebas: <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">T</span> o añade <span class="kbd">#test</span> a la URL.</div>
+      <div class="small muted">Tip: mantén presionado el logo <span class="kbd">G</span> ~0.8s para Admin o usa <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">A</span>. Pruebas: <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">T</span> o añade <span class="kbd">#test</span> a la URL.</div>
       <div class="flex">
         <button class="btn small" id="btnExportWinners">Exportar ganadores (.csv)</button>
         <button class="btn small" id="btnExportState">Exportar estado (.json)</button>
@@ -159,7 +220,7 @@
         <label>Máx. Boost <input id="cfgQuestMax" type="number" min="0" value="3" style="width:90px"/></label>
         <label>Mult SR <input id="cfgQuestMultSR" type="number" step="0.1" min="1" value="1.2" style="width:90px"/></label>
         <label>Mult SSR <input id="cfgQuestMultSSR" type="number" step="0.1" min="1" value="1.5" style="width:90px"/></label>
-        <button class="btn ok" id="saveCfg">Guardar</button>
+        <button class="btn" id="saveCfg">Guardar</button>
       </div>
 
       <h3 style="margin-top:12px">Premios</h3>
@@ -176,7 +237,7 @@
         </select>
         <input id="newOdds" type="number" min="1" value="10" style="width:90px"/>
         <input id="newInv" type="number" min="0" value="10" style="width:110px"/>
-        <button class="btn ok" id="addPrize">Agregar</button>
+        <button class="btn" id="addPrize">Agregar</button>
       </div>
 
       <h3 style="margin-top:16px">Ganadores</h3>
@@ -204,11 +265,15 @@
       return {
         cfg:{pin:'7777', ratioPer20k:1, quest:{enabled:true, maxBoost:3, multSR:1.2, multSSR:1.5}},
         prizes:[
-          {id:id(), name:'Sticker común', tier:'R', odds:60, inventory:200, won:0, redeemed:0, active:true},
-          {id:id(), name:'Mini print', tier:'R', odds:25, inventory:80, won:0, redeemed:0, active:true},
-          {id:id(), name:'Pin', tier:'SR', odds:10, inventory:30, won:0, redeemed:0, active:true},
-          {id:id(), name:'Póster A4', tier:'SR', odds:4, inventory:15, won:0, redeemed:0, active:true},
-          {id:id(), name:'Camiseta', tier:'SSR', odds:1, inventory:3, won:0, redeemed:0, active:true},
+          {id:id(), name:'Sticker vinilo blanco (pequeño)', tier:'R',   odds:50, inventory:371, won:0, redeemed:0, active:true},
+          {id:id(), name:'Sticker tornasol (pequeño)',     tier:'R',   odds:40, inventory:403, won:0, redeemed:0, active:true},
+
+          {id:id(), name:'Botón',                          tier:'SR',  odds:12, inventory:50,  won:0, redeemed:0, active:true},
+          {id:id(), name:'Sticker vinilo (grande)',        tier:'SR',  odds:8,  inventory:75,  won:0, redeemed:0, active:true},
+          {id:id(), name:'Sticker escarchado (grande)',    tier:'SR',  odds:6,  inventory:43,  won:0, redeemed:0, active:true},
+
+          {id:id(), name:'Sticker tornasol (grande)',      tier:'SSR', odds:3,  inventory:25,  won:0, redeemed:0, active:true},
+          {id:id(), name:'Pin de madera',                  tier:'SSR', odds:2,  inventory:32,  won:0, redeemed:0, active:true},
         ],
         pullsToday:0,
         winners:[], // {code, prizeId, name, tier, ts, redeemed:false, boostUsed:number}
@@ -229,7 +294,11 @@
       if(location.hash==="#test"){ runSelfTests(); }
     }
 
-    function migrate(){ if(!state.cfg) state.cfg = {pin:'7777', ratioPer20k:1}; if(!state.cfg.quest) state.cfg.quest = {enabled:true, maxBoost:3, multSR:1.2, multSSR:1.5}; if(!state.quest) state.quest = {boost:0, encounter:null}; }
+    function migrate(){
+      if(!state.cfg) state.cfg = {pin:'7777', ratioPer20k:1};
+      if(!state.cfg.quest) state.cfg.quest = {enabled:true, maxBoost:3, multSR:1.2, multSSR:1.5};
+      if(!state.quest) state.quest = {boost:0, encounter:null};
+    }
 
     // ===== RENDER =====
     function render(){
@@ -254,25 +323,37 @@
       });
     }
 
-    // ===== QUEST =====
+    // ===== QUEST SYSTEM =====
     const ENCOUNTERS = [
-      { id:'slime', name:'Slime chispeante', tier:'R', diff:'fácil', base:0.65, intro:['Te internas entre puestos y aparece un **Slime chispeante**','Un charco vibra y el **Slime chispeante** toma forma'] },
-      { id:'drone', name:'Dron asaltante', tier:'SR', diff:'media', base:0.5, intro:['Un **Dron asaltante** te bloquea el paso','Se oye un zumbido: es un **Dron asaltante**'] },
+      { id:'slime', name:'Slime chispeante', tier:'R',  diff:'fácil', base:0.65, intro:['Te internas entre puestos y aparece un **Slime chispeante**','Un charco vibra y el **Slime chispeante** toma forma'] },
+      { id:'drone', name:'Dron asaltante',  tier:'SR', diff:'media', base:0.5,  intro:['Un **Dron asaltante** te bloquea el paso','Se oye un zumbido: es un **Dron asaltante**'] },
       { id:'shadow', name:'Sombra del Abismo', tier:'SSR', diff:'alta', base:0.35, intro:['El aire se enfría… una **Sombra del Abismo** emerge','Tu reflejo se separa: es la **Sombra del Abismo**'] }
     ];
-    function newEncounter(){ const e = ENCOUNTERS[Math.floor(Math.random()*ENCOUNTERS.length)]; state.quest.encounter = { id:e.id, name:e.name, diff:e.diff, base:e.base, line:e.intro[Math.floor(Math.random()*e.intro.length)] }; save(); }
+
+    function newEncounter(){
+      const e = ENCOUNTERS[Math.floor(Math.random()*ENCOUNTERS.length)];
+      state.quest.encounter = { id:e.id, name:e.name, diff:e.diff, base:e.base, line:e.intro[Math.floor(Math.random()*e.intro.length)] };
+      save();
+    }
+
     function renderQuestUI(){
       const box = document.getElementById('questBox'); const text = document.getElementById('questText'); const choices = document.getElementById('questChoices'); const q = state.quest.encounter;
       if(!state.cfg.quest.enabled){ box.classList.add('hidden'); return; } else box.classList.remove('hidden');
       choices.innerHTML = '';
-      if(!q){ text.innerHTML = 'Pulsa “Nueva aventura” para un encuentro.'; const btn = document.createElement('button'); btn.className='btn small'; btn.id='btnNewQuest'; btn.textContent='Nueva aventura'; btn.onclick = ()=>{ newEncounter(); }; choices.appendChild(btn); return; }
+      if(!q){
+        text.innerHTML = 'Pulsa “Nueva aventura” para un encuentro.';
+        const btn = document.createElement('button'); btn.className='btn small'; btn.id='btnNewQuest'; btn.textContent='Nueva aventura'; btn.onclick = ()=>{ newEncounter(); }; choices.appendChild(btn);
+        return;
+      }
       text.innerHTML = `${q.line}. <br/>Te plantas frente a <strong>${q.name}</strong> (dificultad ${q.diff}). ¿Qué harás?`;
       const b1 = mkChoice('Ataque rápido', ()=>resolveQuest('attack'));
       const b2 = mkChoice('Defensa calculada', ()=>resolveQuest('defend'));
       const b3 = mkChoice('Habilidad: Golpe crítico', ()=>resolveQuest('skill'));
       choices.append(b1,b2,b3);
     }
+
     function mkChoice(label, fn){ const b=document.createElement('button'); b.className='btn small'; b.textContent=label; b.onclick=fn; return b; }
+
     function resolveQuest(choice){
       const q = state.quest.encounter; if(!q) return;
       let p = q.base;
@@ -282,26 +363,62 @@
       p = Math.max(0.05, Math.min(0.9, p));
       const win = Math.random() < p;
       const text = document.getElementById('questText'); const choices = document.getElementById('questChoices');
-      if(win){ state.quest.boost = Math.min(state.cfg.quest.maxBoost, (state.quest.boost||0)+1); text.innerHTML = `¡Victoria! Derrotaste a <strong>${q.name}</strong>. <span class="success">Aura de suerte +1</span> (Boost actual: ${state.quest.boost}). Usa tu invocación para aprovecharlo.`; }
-      else { text.innerHTML = `Has fallado contra <strong>${q.name}</strong>. <span class="warn">Sin boost</span>, pero aún puedes invocar.`; }
-      state.quest.encounter = null; choices.innerHTML = ''; const btn = document.createElement('button'); btn.className='btn small'; btn.textContent='Nueva aventura'; btn.onclick = ()=>{ newEncounter(); }; choices.appendChild(btn); save();
+      if(win){
+        state.quest.boost = Math.min(state.cfg.quest.maxBoost, (state.quest.boost||0)+1);
+        text.innerHTML = `¡Victoria! Derrotaste a <strong>${q.name}</strong>. <span class="success">Aura de suerte +1</span> (Boost actual: ${state.quest.boost}). Usa tu invocación para aprovecharlo.`;
+      } else {
+        text.innerHTML = `Has fallado contra <strong>${q.name}</strong>. <span class="warn">Sin boost</span>, pero aún puedes invocar.`;
+      }
+      state.quest.encounter = null;
+      choices.innerHTML = '';
+      const btn = document.createElement('button'); btn.className='btn small'; btn.textContent='Nueva aventura'; btn.onclick = ()=>{ newEncounter(); }; choices.appendChild(btn);
+      save();
     }
 
-    // ===== GACHA =====
+    // ===== GACHA LOGIC =====
     function activePool(){
       const pool = state.prizes.filter(p=>p.active && (p.inventory - p.won) > 0);
       const boost = (state.cfg.quest.enabled? (state.quest.boost||0) : 0);
       const mSR = Math.pow(state.cfg.quest.multSR||1, boost||0);
       const mSSR = Math.pow(state.cfg.quest.multSSR||1, boost||0);
-      let totalWeight = 0; const weighted = pool.map(p=>{ const mult = p.tier==='SSR' ? mSSR : (p.tier==='SR' ? mSR : 1); const w = p.odds * mult; totalWeight += w; return {ref:p, weight:w}; });
+      let totalWeight = 0;
+      const weighted = pool.map(p=>{
+        const mult = p.tier==='SSR' ? mSSR : (p.tier==='SR' ? mSR : 1);
+        const w = p.odds * mult; totalWeight += w; return {ref:p, weight:w};
+      });
       return {weighted,totalWeight};
     }
-    function pickPrize(){ const {weighted,totalWeight} = activePool(); if(weighted.length===0) return null; let r = Math.random()*totalWeight; for(const e of weighted){ if(r < e.weight) return e.ref; r -= e.weight; } return weighted[weighted.length-1].ref; }
-    function pullOnce(){ const prize = pickPrize(); if(!prize){ setResult('Sin stock. Revisa Admin.', true); return null; } prize.won++; const code = genCode(prize.tier); const boostUsed = state.quest.boost||0; const rec = {code, prizeId:prize.id, name:prize.name, tier:prize.tier, ts:Date.now(), redeemed:false, boostUsed}; state.winners.unshift(rec); state.pullsToday++; if(state.cfg.quest.enabled && state.quest.boost>0){ state.quest.boost = Math.max(0, state.quest.boost-1); } save(); return rec; }
-    function genCode(tier){ const map = {SSR:'⭐', SR:'◇', R:'○'}; const token = Math.random().toString(36).slice(2,6).toUpperCase(); const time = new Date(); const d = String(time.getDate()).padStart(2,'0'); const m = String(time.getMonth()+1).padStart(2,'0'); return `${map[tier]||'○'}-${m}${d}-${token}`; }
-    function setResult(msg, isError=false){ const el = document.getElementById('result'); el.innerHTML = msg; el.className = 'result ' + (isError?'danger':'success'); document.body.animate([{filter:'brightness(1)'},{filter:'brightness(1.4)'},{filter:'brightness(1)'}], {duration:420}); }
 
-    // ===== ADMIN UI =====
+    function pickPrize(){
+      const {weighted,totalWeight} = activePool(); if(weighted.length===0) return null;
+      let r = Math.random()*totalWeight; for(const e of weighted){ if(r < e.weight) return e.ref; r -= e.weight; }
+      return weighted[weighted.length-1].ref;
+    }
+
+    function pullOnce(){
+      const prize = pickPrize(); if(!prize){ setResult('Sin stock. Revisa Admin.', true); return null; }
+      prize.won++;
+      const code = genCode(prize.tier);
+      const boostUsed = state.quest.boost||0;
+      const rec = {code, prizeId:prize.id, name:prize.name, tier:prize.tier, ts:Date.now(), redeemed:false, boostUsed};
+      state.winners.unshift(rec); state.pullsToday++;
+      if(state.cfg.quest.enabled && state.quest.boost>0){ state.quest.boost = Math.max(0, state.quest.boost-1); }
+      save(); return rec;
+    }
+
+    function genCode(tier){
+      const map = {SSR:'⭐', SR:'◇', R:'○'};
+      const token = Math.random().toString(36).slice(2,6).toUpperCase();
+      const time = new Date(); const d = String(time.getDate()).padStart(2,'0'); const m = String(time.getMonth()+1).padStart(2,'0');
+      return `${map[tier]||'○'}-${m}${d}-${token}`;
+    }
+
+    function setResult(msg, isError=false){
+      const el = document.getElementById('result'); el.innerHTML = msg; el.className = 'result ' + (isError?'danger':'success');
+      document.body.animate([{filter:'brightness(1)'},{filter:'brightness(1.2)'},{filter:'brightness(1)'}], {duration:360});
+    }
+
+    // ===== ADMIN RENDER =====
     function renderAdmin(){
       document.getElementById('cfgTiradaRatio').value = state.cfg.ratioPer20k;
       document.getElementById('cfgPin').value = state.cfg.pin;
@@ -309,9 +426,14 @@
       document.getElementById('cfgQuestMax').value = state.cfg.quest.maxBoost;
       document.getElementById('cfgQuestMultSR').value = state.cfg.quest.multSR;
       document.getElementById('cfgQuestMultSSR').value = state.cfg.quest.multSSR;
-      const tbody = document.querySelector('#adminTable tbody'); if(tbody){ tbody.innerHTML = ''; }
-      const table = document.getElementById('adminTable'); table.querySelector('tbody')?.remove(); const tb = document.createElement('tbody'); table.appendChild(tb);
-      state.prizes.forEach((p,idx)=>{ const tr = document.createElement('tr'); tr.innerHTML = `
+
+      const table = document.getElementById('adminTable');
+      table.querySelector('tbody')?.remove();
+      const tb = document.createElement('tbody'); table.appendChild(tb);
+
+      state.prizes.forEach((p,idx)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
           <td><input data-k="name" data-i="${idx}" value="${p.name}" class="w-100"/></td>
           <td>
             <select data-k="tier" data-i="${idx}">
@@ -323,29 +445,121 @@
           <td><input type="number" min="0" data-k="odds" data-i="${idx}" value="${p.odds}" style="width:90px"/></td>
           <td><input type="number" min="0" data-k="inventory" data-i="${idx}" value="${p.inventory}" style="width:110px"/></td>
           <td><input type="checkbox" data-k="active" data-i="${idx}" ${p.active?'checked':''}/></td>
-          <td><button class="btn small danger" data-del="${idx}">Eliminar</button></td>`; tb.appendChild(tr); });
+          <td><button class="btn small danger" data-del="${idx}">Eliminar</button></td>`;
+        tb.appendChild(tr);
+      });
+
       const box = document.getElementById('winnersBox');
-      box.innerHTML = state.winners.slice(0,120).map(w=>{ const date = new Date(w.ts).toLocaleString(); const tierClass = 'tier-'+w.tier; return `<div class="row"><div><strong>${w.name}</strong> <span class="${tierClass}">[${w.tier}]</span><br><span class="small muted">${date} • boost usado: ${w.boostUsed||0}</span></div><div class="code">${w.code}</div></div>`; }).join('');
+      box.innerHTML = state.winners.slice(0,120).map(w=>{
+        const date = new Date(w.ts).toLocaleString();
+        const tierClass = 'tier-'+w.tier;
+        return `<div class="row"><div><strong>${w.name}</strong> <span class="${tierClass}">[${w.tier}]</span><br><span class="small muted">${date} • boost usado: ${w.boostUsed||0}</span></div><div class="code">${w.code}</div></div>`;
+      }).join('');
     }
+
     function requirePIN(){ const pin = prompt('PIN Admin'); return pin && pin === state.cfg.pin; }
+
+    // ===== EXPORTS =====
     function buildCSV(rows){ return rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\n'); }
     function exportCSV(){ const rows = [["code","prize","tier","timestamp","redeemed","boostUsed"]]; state.winners.forEach(w=>{ rows.push([w.code, w.name, w.tier, new Date(w.ts).toISOString(), w.redeemed?'yes':'no', w.boostUsed||0]); }); const csv = buildCSV(rows); download('ganadores.csv', csv, 'text/csv'); }
     function exportState(){ download('gacha_state.json', JSON.stringify(state,null,2), 'application/json'); }
     function download(filename, content, type){ const blob = new Blob([content], {type}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
 
-    // EVENTS
-    document.getElementById('pull').addEventListener('click', ()=>{ const rec = pullOnce(); if(rec){ setResult(`¡Ganaste <strong>${rec.name}</strong> <span class="tier-${rec.tier}">[${rec.tier}]</span><br><span class="muted">Código:</span> <span class="code">${rec.code}</span>`); } });
-    document.getElementById('btnAddPulls').addEventListener('click', ()=>{ if(!requirePIN()) return alert('PIN incorrecto'); const n = parseInt(document.getElementById('pulls').value||'1',10); if(n>0){ state.pullsToday += n; save(); } });
-    (function(){ const logo=document.getElementById('logo'); let t=null; logo.addEventListener('pointerdown', ()=>{ t=setTimeout(()=>{ if(requirePIN()) openAdmin(); }, 800)}); ['pointerup','pointerleave'].forEach(ev=>logo.addEventListener(ev,()=>{ if(t){clearTimeout(t); t=null;} })); })();
-    document.addEventListener('keydown', (e)=>{ try{ if(e.ctrlKey && e.shiftKey && (e.key==='A' || e.key==='a')){ if(requirePIN()) openAdmin(); } if(e.ctrlKey && e.shiftKey && (e.key==='T' || e.key==='t')){ runSelfTests(true); } }catch{} });
+    // ===== EVENTS =====
+    document.getElementById('pull').addEventListener('click', ()=>{
+      const rec = pullOnce();
+      if(rec){ setResult(`¡Ganaste <strong>${rec.name}</strong> <span class="tier-${rec.tier}">[${rec.tier}]</span><br><span class="muted">Código:</span> <span class="code">${rec.code}</span>`); }
+    });
+
+    document.getElementById('btnAddPulls').addEventListener('click', ()=>{
+      if(!requirePIN()) return alert('PIN incorrecto');
+      const n = parseInt(document.getElementById('pulls').value||'1',10);
+      if(n>0){ state.pullsToday += n; save(); }
+    });
+
+    (function(){
+      const logo=document.getElementById('logo'); let t=null;
+      logo.addEventListener('pointerdown', ()=>{ t=setTimeout(()=>{ if(requirePIN()) openAdmin(); }, 800)});
+      ['pointerup','pointerleave'].forEach(ev=>logo.addEventListener(ev,()=>{ if(t){clearTimeout(t); t=null;} }));
+    })();
+
+    document.addEventListener('keydown', (e)=>{
+      try{
+        if(e.ctrlKey && e.shiftKey && (e.key==='A' || e.key==='a')){ if(requirePIN()) openAdmin(); }
+        if(e.ctrlKey && e.shiftKey && (e.key==='T' || e.key==='t')){ runSelfTests(true); }
+      }catch{}
+    });
+
     function openAdmin(){ document.getElementById('admin').style.display='flex'; renderAdmin(); }
     document.getElementById('closeAdmin').addEventListener('click', ()=>{ document.getElementById('admin').style.display='none'; render(); });
-    document.getElementById('admin').addEventListener('change', (e)=>{ const k = e.target.getAttribute('data-k'); if(!k) return; const i = +e.target.getAttribute('data-i'); if(!requirePIN()) return e.preventDefault(); let v = e.target.type==='checkbox' ? e.target.checked : e.target.value; if(['inventory','odds'].includes(k)) v = parseInt(v||'0',10); state.prizes[i][k] = v; save(); renderAdmin(); });
-    document.getElementById('addPrize').addEventListener('click', ()=>{ if(!requirePIN()) return; const name = document.getElementById('newName').value.trim(); const tier = document.getElementById('newTier').value; const odds = parseInt(document.getElementById('newOdds').value||'0',10); const inv = parseInt(document.getElementById('newInv').value||'0',10); if(!name || odds<=0 || inv<0) return alert('Completa los campos'); state.prizes.push({id:id(), name, tier, odds, inventory:inv, won:0, redeemed:0, active:true}); document.getElementById('newName').value=''; save(); renderAdmin(); });
-    document.getElementById('adminTable').addEventListener('click', (e)=>{ const del = e.target.getAttribute('data-del'); if(del!=null){ if(!requirePIN()) return; state.prizes.splice(+del,1); save(); renderAdmin(); } });
-    document.getElementById('saveCfg').addEventListener('click', ()=>{ if(!requirePIN()) return; state.cfg.ratioPer20k = parseInt(document.getElementById('cfgTiradaRatio').value||'1',10); state.cfg.pin = document.getElementById('cfgPin').value||'7777'; state.cfg.quest.enabled = document.getElementById('cfgQuestEnabled').checked; state.cfg.quest.maxBoost = parseInt(document.getElementById('cfgQuestMax').value||'3',10); state.cfg.quest.multSR = parseFloat(document.getElementById('cfgQuestMultSR').value||'1.2'); state.cfg.quest.multSSR = parseFloat(document.getElementById('cfgQuestMultSSR').value||'1.5'); save(); alert('Guardado'); });
 
-    // TESTS
+    document.getElementById('admin').addEventListener('change', (e)=>{
+      const k = e.target.getAttribute('data-k'); if(!k) return;
+      const i = +e.target.getAttribute('data-i');
+      if(!requirePIN()) return e.preventDefault();
+      let v = e.target.type==='checkbox' ? e.target.checked : e.target.value;
+      if(['inventory','odds'].includes(k)) v = parseInt(v||'0',10);
+      state.prizes[i][k] = v; save(); renderAdmin();
+    });
+
+    document.getElementById('addPrize').addEventListener('click', ()=>{
+      if(!requirePIN()) return;
+      const name = document.getElementById('newName').value.trim();
+      const tier = document.getElementById('newTier').value;
+      const odds = parseInt(document.getElementById('newOdds').value||'0',10);
+      const inv = parseInt(document.getElementById('newInv').value||'0',10);
+      if(!name || odds<=0 || inv<0) return alert('Completa los campos');
+      state.prizes.push({id:id(), name, tier, odds, inventory:inv, won:0, redeemed:0, active:true});
+      document.getElementById('newName').value='';
+      save(); renderAdmin();
+    });
+
+    document.getElementById('adminTable').addEventListener('click', (e)=>{
+      const del = e.target.getAttribute('data-del');
+      if(del!=null){
+        if(!requirePIN()) return;
+        state.prizes.splice(+del,1); save(); renderAdmin();
+      }
+    });
+
+    document.getElementById('saveCfg').addEventListener('click', ()=>{
+      if(!requirePIN()) return;
+      state.cfg.ratioPer20k = parseInt(document.getElementById('cfgTiradaRatio').value||'1',10);
+      state.cfg.pin = document.getElementById('cfgPin').value||'7777';
+      state.cfg.quest.enabled = document.getElementById('cfgQuestEnabled').checked;
+      state.cfg.quest.maxBoost = parseInt(document.getElementById('cfgQuestMax').value||'3',10);
+      state.cfg.quest.multSR = parseFloat(document.getElementById('cfgQuestMultSR').value||'1.2');
+      state.cfg.quest.multSSR = parseFloat(document.getElementById('cfgQuestMultSSR').value||'1.5');
+      save(); alert('Guardado');
+    });
+
+    document.getElementById('btnExportWinners').addEventListener('click', exportCSV);
+    document.getElementById('btnExportState').addEventListener('click', exportState);
+
+    // ===== REINICIO DURO ROBUSTO =====
+    document.getElementById('btnHardReset').addEventListener('click', async ()=>{
+      if(!requirePIN()) return;
+      if(!confirm('¿Reiniciar todo el estado? Esto borra ganadores, stock y boost.')) return;
+
+      try{
+        removeLS(LS_KEY);
+        try{
+          Object.keys(localStorage)
+            .filter(k=>k.toLowerCase().includes('gacha') || k.toLowerCase().includes('quest'))
+            .forEach(k=>localStorage.removeItem(k));
+        }catch(e){}
+
+        // Si luego activas PWA, limpia caches y SW
+        if('caches' in window){ const names = await caches.keys(); await Promise.all(names.map(n=>caches.delete(n))); }
+        if('serviceWorker' in navigator){ const regs = await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.map(r=>r.unregister())); }
+      }catch(e){}
+
+      state = defaultState();
+      save();
+      alert('Reiniciado. Si ves datos viejos, recarga la página.');
+    });
+
+    // ===== TESTS (opcionales) =====
     function logTest(msg){ const el=document.getElementById('testLog'); el.style.display='block'; el.textContent += msg + "\n"; }
     function assert(cond, msg){ if(!cond){ logTest('❌ ' + msg); throw new Error(msg); } else { logTest('✅ ' + msg); } }
     function runSelfTests(show=true){ try{
